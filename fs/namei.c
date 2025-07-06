@@ -2209,36 +2209,19 @@ static int link_path_walk(const char *name, struct nameidata *nd)
 				name = this.name;
 			}
 #ifdef CONFIG_KSU_SUSFS_SUS_PATH
+			if (nd->state & ND_STATE_LAST_SDCARD_SUS_PATH) {
+				// return -ENOENT here since it is walking the sub path of sus sdcard path
+				return -ENOENT;
+			}
 			if (parent->d_inode) {
-				if (susfs_is_base_dentry_sdcard_dir(parent) &&
-					susfs_is_sus_sdcard_d_name_found(name))
+				if (susfs_is_base_dentry_android_data_dir(parent) &&
+					susfs_is_sus_android_data_d_name_found(name))
 				{
-					if (nd->state & ND_STATE_RENAMEAT) {
-						do {
-							name++;
-						} while (likely(*name != '/') && *name != '\0');
-						while (*name=='/')
-							name++;
-						if (!*name) {
-							return -EPERM;
-						}
-						return -ENOENT;
-					} else if (nd->state & ND_STATE_FILENAME_CREATE) {
-						if (nd->last.name[nd->last.len] && !(nd->flags & LOOKUP_DIRECTORY)) {
-							return -ENOENT;
-						} else {
-							do {
-								name++;
-							} while (likely(*name != '/') && *name != '\0');
-							while (*name=='/')
-								name++;
-							if (!*name) {
-								return -EACCES;
-							}
-							return -ENOENT;
-						}
-					}
-					return -ENOENT;
+					nd->state |= ND_STATE_LAST_SDCARD_SUS_PATH;
+				} else if (susfs_is_base_dentry_sdcard_dir(parent) &&
+						   susfs_is_sus_sdcard_d_name_found(name))
+				{
+					nd->state |= ND_STATE_LAST_SDCARD_SUS_PATH;
 				}
 			}
 #endif
