@@ -2553,14 +2553,6 @@ static struct filename *filename_parentat(int dfd, struct filename *name,
 	if (IS_ERR(name))
 		return name;
 	set_nameidata(&nd, dfd, name);
-#ifdef CONFIG_KSU_SUSFS_SUS_PATH
-	if (flags & LOOKUP_FILENAME_CREATE) {
-		nd.state |= ND_STATE_FILENAME_CREATE;
-	}
-	if (flags & LOOKUP_RENAMEAT) {
-		nd.state |= ND_STATE_RENAMEAT;
-	}
-#endif
 	retval = path_parentat(&nd, flags | LOOKUP_RCU, parent);
 	if (unlikely(retval == -ECHILD))
 		retval = path_parentat(&nd, flags, parent);
@@ -3899,9 +3891,6 @@ static struct dentry *filename_create(int dfd, struct filename *name,
 	 * other flags passed in are ignored!
 	 */
 	lookup_flags &= LOOKUP_REVAL;
-#ifdef CONFIG_KSU_SUSFS_SUS_PATH
-	lookup_flags |= LOOKUP_FILENAME_CREATE;
-#endif
 
 	name = filename_parentat(dfd, name, lookup_flags, path, &last, &type);
 	if (IS_ERR(name))
@@ -4860,9 +4849,6 @@ retry:
 		goto exit;
 	}
 
-#ifdef CONFIG_KSU_SUSFS_SUS_PATH
-	lookup_flags |= LOOKUP_RENAMEAT;
-#endif
 	to = filename_parentat(newdfd, getname(newname), lookup_flags,
 				&new_path, &new_last, &new_type);
 	if (IS_ERR(to)) {
