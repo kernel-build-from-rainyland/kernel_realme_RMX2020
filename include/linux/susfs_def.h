@@ -78,6 +78,7 @@
 #define DATA_ADB_NO_AUTO_ADD_SUS_BIND_MOUNT "/data/adb/susfs_no_auto_add_sus_bind_mount"
 #define DATA_ADB_NO_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT "/data/adb/susfs_no_auto_add_sus_ksu_default_mount"
 #define DATA_ADB_NO_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT "/data/adb/susfs_no_auto_add_try_umount_for_bind_mount"
+#define DATA_ADB_UMOUNT_FOR_ZYGOTE_ISO_SERVICE "/data/adb/susfs_umount_for_zygote_iso_service"
 
 static inline bool susfs_is_current_non_root_user_app_proc(void) {
 	return test_ti_thread_flag(&current->thread_info, TIF_NON_ROOT_USER_APP_PROC);
